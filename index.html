@@ -2,29 +2,32 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Thank you</title>
 </head>
 <body style="font-family:Arial,sans-serif;text-align:center;margin-top:80px;">
   <h2 id="msg">Processing your request...</h2>
 
   <script>
-    // Read any value you pass in the email link, e.g. https://yourpage.com/?id=12345
     const params = new URLSearchParams(window.location.search);
-    const recordId = params.get("id");
+    const recordId = params.get("record_id");
 
-    // Paste your own standalone function URL here (with your zapikey)
-    const FUNCTION_URL = "https://www.zohoapis.com/crm/v7/functions/YOUR_FUNCTION_NAME/actions/execute?auth_type=apikey&zapikey=YOUR_API_KEY";
+    const FUNCTION_URL = "https://sandbox.zohoapis.com/crm/v7/functions/test/actions/execute?auth_type=apikey&zapikey=1003.c35c292f0b39da5388e64f1ad249b72d.9df439ec00bce2fe71d325b5b32b7d9e";
 
-    fetch(FUNCTION_URL + "&id=" + encodeURIComponent(recordId), {
-      method: "GET",
-      mode: "no-cors"   // fire the request without needing CORS headers
-    })
-    .then(() => {
-      document.getElementById("msg").textContent = "Thank you! Your response has been recorded.";
-    })
-    .catch(() => {
-      document.getElementById("msg").textContent = "Something went wrong. Please try again.";
-    });
+    if (!recordId) {
+      document.getElementById("msg").textContent = "Invalid link. Record ID is missing.";
+    } else {
+      fetch(FUNCTION_URL + "&record_id=" + encodeURIComponent(recordId), {
+        method: "GET",
+        mode: "no-cors"
+      })
+      .then(() => {
+        document.getElementById("msg").textContent = "Thank you! Your response has been recorded.";
+      })
+      .catch(() => {
+        document.getElementById("msg").textContent = "Something went wrong. Please try again.";
+      });
+    }
   </script>
 </body>
 </html>

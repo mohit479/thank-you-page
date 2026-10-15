@@ -44,3 +44,124 @@
       border-top-color: #2e7d32;
       border-radius: 50%;
       animation: spin 0.9s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Animated checkmark */
+    .circle {
+      stroke: #2e7d32; stroke-width: 4; fill: #e8f5e9;
+      stroke-dasharray: 300; stroke-dashoffset: 300;
+      animation: draw 0.7s ease-out forwards;
+    }
+    .tick {
+      stroke: #2e7d32; stroke-width: 6; fill: none;
+      stroke-linecap: round; stroke-linejoin: round;
+      stroke-dasharray: 60; stroke-dashoffset: 60;
+      animation: draw 0.5s ease-out 0.6s forwards;
+    }
+    .cross {
+      stroke: #c62828; stroke-width: 6; fill: none; stroke-linecap: round;
+    }
+    .circle.error { stroke: #c62828; fill: #ffebee; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+
+    h1 { font-size: 28px; margin-bottom: 12px; }
+    p  { font-size: 16px; line-height: 1.6; color: #546e7a; }
+
+    .badge {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2e7d32;
+      background: #e8f5e9;
+      border-radius: 999px;
+    }
+    .badge.error { color: #c62828; background: #ffebee; }
+
+    .footer { margin-top: 28px; font-size: 13px; color: #90a4ae; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <!-- Loading -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <h1>Please wait...</h1>
+      <p>We are recording your response.</p>
+    </div>
+
+    <!-- Success -->
+    <div id="success" class="hidden">
+      <svg class="icon" viewBox="0 0 100 100">
+        <circle class="circle" cx="50" cy="50" r="46"/>
+        <path class="tick" d="M30 52 L45 67 L72 38"/>
+      </svg>
+      <h1>Thank You!</h1>
+      <p>Your confirmation has been recorded successfully. You can safely close this page.</p>
+      <span class="badge">Marked as Royalty Free</span>
+      <div class="footer">Your Team</div>
+    </div>
+
+    <!-- Error -->
+    <div id="error" class="hidden">
+      <svg class="icon" viewBox="0 0 100 100">
+        <circle class="circle error" cx="50" cy="50" r="46"/>
+        <path class="cross" d="M35 35 L65 65 M65 35 L35 65"/>
+      </svg>
+      <h1>Something went wrong</h1>
+      <p id="errorText">We could not record your response. Please try again or contact us.</p>
+      <span class="badge error">Not recorded</span>
+      <div class="footer">Your Team</div>
+    </div>
+
+  </div>
+
+  <script>
+    const BASE = "https://sandbox.zohoapis.com/crm/v7/functions/test/actions/execute?auth_type=apikey&zapikey=1003.c35c292f0b39da5388e64f1ad249b72d.9df439ec00bce2fe71d325b5b32b7d9e";
+
+    const params   = new URLSearchParams(window.location.search);
+    const recordId = params.get("record_id");
+
+    function show(id) {
+      ["loading", "success", "error"].forEach(function (s) {
+        document.getElementById(s).classList.toggle("hidden", s !== id);
+      });
+    }
+
+    function showError(message) {
+      if (message) document.getElementById("errorText").textContent = message;
+      show("error");
+    }
+
+    if (!recordId) {
+      showError("This link is invalid because the record ID is missing.");
+    } else {
+      const url = BASE + "&record_id=" + encodeURIComponent(recordId);
+
+      // Attempt 1: normal request, so a real server error can be detected
+      fetch(url, { method: "GET" })
+        .then(function (res) {
+          if (res.ok) {
+            show("success");
+          } else {
+            showError("The server returned an error (status " + res.status + "). Please contact us.");
+          }
+        })
+        .catch(function () {
+          // Attempt 2: the browser blocked reading the response (CORS),
+          // so send the request without reading the result
+          fetch(url, { method: "GET", mode: "no-cors" })
+            .then(function () { show("success"); })
+            .catch(function () {
+              showError("We could not reach the server. Please check your connection and try again.");
+            });
+        });
+    }
+  </script>
+</body>
+</html>

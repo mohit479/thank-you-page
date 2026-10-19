@@ -122,10 +122,10 @@
   </div>
 
   <script>
-    const BASE = "https://sandbox.zohoapis.com/crm/v7/functions/test/actions/execute?auth_type=apikey&zapikey=1003.c35c292f0b39da5388e64f1ad249b72d.9df439ec00bce2fe71d325b5b32b7d9e";
+    const BASE = "https://www.zohoapis.com/crm/v7/functions/update_order_status/actions/execute?auth_type=apikey&zapikey=1003.af251af66bb233ed0dfcb7f4f968f88b.9c80e82b2c8a22d0ff53f1734c370d83";
 
     const params   = new URLSearchParams(window.location.search);
-    const recordId = params.get("record_id");
+    const recordId = params.get("con_id");
 
     function show(id) {
       ["loading", "success", "error"].forEach(function (s) {
@@ -141,7 +141,7 @@
     if (!recordId) {
       showError("This link is invalid because the record ID is missing.");
     } else {
-      const url = BASE + "&record_id=" + encodeURIComponent(recordId);
+      const url = BASE + "&con_id=" + encodeURIComponent(recordId);
 
       // Attempt 1: normal request, so a real server error can be detected
       fetch(url, { method: "GET" })

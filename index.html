@@ -6,302 +6,171 @@
   <title>Thank You</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e3f2fd 100%);
-      color: #263238;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 20px; font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e3f2fd 100%); color: #263238;
     }
-
     .card {
-      width: 100%;
-      max-width: 460px;
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 48px 36px;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(46, 125, 50, 0.15);
-      animation: rise 0.6s ease-out both;
+      width: 100%; max-width: 640px; background: #fff; border-radius: 20px; padding: 40px 30px;
+      text-align: center; box-shadow: 0 20px 50px rgba(46, 125, 50, .15); animation: rise .6s ease-out both;
     }
-
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
+    @keyframes rise { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .icon { width: 96px; height: 96px; margin: 0 auto 24px; }
-
-    /* Loading spinner */
-    .spinner {
-      width: 64px; height: 64px;
-      margin: 16px auto 32px;
-      border: 5px solid #c8e6c9;
-      border-top-color: #2e7d32;
-      border-radius: 50%;
-      animation: spin 0.9s linear infinite;
-    }
+    .spinner { width: 64px; height: 64px; margin: 16px auto 32px; border: 5px solid #c8e6c9; border-top-color: #2e7d32; border-radius: 50%; animation: spin .9s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Animated checkmark */
-    .circle {
-      stroke: #2e7d32; stroke-width: 4; fill: #e8f5e9;
-      stroke-dasharray: 300; stroke-dashoffset: 300;
-      animation: draw 0.7s ease-out forwards;
-    }
-    .tick {
-      stroke: #2e7d32; stroke-width: 6; fill: none;
-      stroke-linecap: round; stroke-linejoin: round;
-      stroke-dasharray: 60; stroke-dashoffset: 60;
-      animation: draw 0.5s ease-out 0.6s forwards;
-    }
-    .cross {
-      stroke: #c62828; stroke-width: 6; fill: none; stroke-linecap: round;
-    }
+    .circle { stroke: #2e7d32; stroke-width: 4; fill: #e8f5e9; stroke-dasharray: 300; stroke-dashoffset: 300; animation: draw .7s ease-out forwards; }
+    .tick { stroke: #2e7d32; stroke-width: 6; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 60; stroke-dashoffset: 60; animation: draw .5s ease-out .6s forwards; }
+    .cross { stroke: #c62828; stroke-width: 6; fill: none; stroke-linecap: round; }
     .circle.error { stroke: #c62828; fill: #ffebee; }
     @keyframes draw { to { stroke-dashoffset: 0; } }
-
     h1 { font-size: 28px; margin-bottom: 12px; }
-    p  { font-size: 16px; line-height: 1.6; color: #546e7a; }
-
-    .badge {
-      display: inline-block;
-      margin-top: 24px;
-      padding: 8px 18px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #2e7d32;
-      background: #e8f5e9;
-      border-radius: 999px;
-    }
+    p { font-size: 16px; line-height: 1.6; color: #546e7a; }
+    .badge { display: inline-block; margin-top: 24px; padding: 8px 18px; font-size: 14px; font-weight: 600; color: #2e7d32; background: #e8f5e9; border-radius: 999px; }
     .badge.error { color: #c62828; background: #ffebee; }
-
     .footer { margin-top: 28px; font-size: 13px; color: #90a4ae; }
-
     .hidden { display: none; }
-
-    /* ---- Debug log panel ---- */
-    .debug {
-      margin-top: 32px;
-      text-align: left;
-      border-top: 1px dashed #cfd8dc;
-      padding-top: 16px;
-    }
-    .debug-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #546e7a;
-    }
-    .debug-head button {
-      font-size: 12px;
-      padding: 4px 10px;
-      border: 1px solid #b0bec5;
-      background: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #logBox {
-      width: 100%;
-      height: 220px;
-      overflow: auto;
-      background: #263238;
-      color: #c8e6c9;
-      font-family: Consolas, Menlo, monospace;
-      font-size: 12px;
-      line-height: 1.5;
-      padding: 10px;
-      border-radius: 8px;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
+    .debug { margin-top: 28px; border-top: 1px solid #e0e0e0; padding-top: 18px; text-align: left; }
+    .debug h2 { font-size: 16px; margin-bottom: 8px; }
+    .debug p { font-size: 12px; margin-bottom: 10px; }
+    #debugLog { width: 100%; min-height: 210px; padding: 10px; border: 1px solid #cfd8dc; border-radius: 8px; background: #f7f9fa; color: #263238; font: 12px/1.45 Consolas, monospace; resize: vertical; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .copy-btn { margin-top: 10px; padding: 9px 14px; border: 0; border-radius: 8px; background: #2e7d32; color: white; font-weight: 600; cursor: pointer; }
+    .copy-status { display: inline-block; margin-left: 8px; color: #546e7a; font-size: 12px; }
   </style>
 </head>
 <body>
   <div class="card">
-
-    <!-- Loading -->
     <div id="loading">
       <div class="spinner"></div>
       <h1>Please wait...</h1>
       <p>We are recording your response.</p>
     </div>
 
-    <!-- Success -->
     <div id="success" class="hidden">
-      <svg class="icon" viewBox="0 0 100 100">
-        <circle class="circle" cx="50" cy="50" r="46"/>
-        <path class="tick" d="M30 52 L45 67 L72 38"/>
-      </svg>
+      <svg class="icon" viewBox="0 0 100 100" aria-hidden="true"><circle class="circle" cx="50" cy="50" r="46"/><path class="tick" d="M30 52 L45 67 L72 38"/></svg>
       <h1>Thank You!</h1>
       <p>Your confirmation has been recorded successfully. You can safely close this page.</p>
       <span class="badge">Marked as Royalty Free</span>
       <div class="footer">Your Team</div>
     </div>
 
-    <!-- Error -->
     <div id="error" class="hidden">
-      <svg class="icon" viewBox="0 0 100 100">
-        <circle class="circle error" cx="50" cy="50" r="46"/>
-        <path class="cross" d="M35 35 L65 65 M65 35 L35 65"/>
-      </svg>
-      <h1>Something went wrong</h1>
-      <p id="errorText">We could not record your response. Please try again or contact us.</p>
-      <span class="badge error">Not recorded</span>
+      <svg class="icon" viewBox="0 0 100 100" aria-hidden="true"><circle class="circle error" cx="50" cy="50" r="46"/><path class="cross" d="M35 35 L65 65 M65 35 L35 65"/></svg>
+      <h1>We couldn't verify the update</h1>
+      <p id="errorText">We could not verify whether your response was recorded. Please contact us if needed.</p>
+      <span class="badge error">Not verified</span>
       <div class="footer">Your Team</div>
     </div>
 
-    <!-- DEBUG LOGS (remove this block when done testing) -->
+    <!-- Temporary troubleshooting panel. Remove it after debugging. -->
     <div class="debug">
-      <div class="debug-head">
-        <span>Debug logs</span>
-        <button type="button" id="copyLogs">Copy logs</button>
-      </div>
-      <div id="logBox"></div>
+      <h2>Temporary diagnostic log</h2>
+      <p>This log masks the API key. Copy it and send it for troubleshooting. Do not share a full request URL that contains the API key.</p>
+      <textarea id="debugLog" readonly aria-label="Diagnostic log"></textarea>
+      <button class="copy-btn" id="copyLogBtn" type="button">Copy diagnostic log</button><span class="copy-status" id="copyStatus"></span>
     </div>
-
   </div>
 
   <script>
-    const BASE = "https://www.zohoapis.com/crm/v7/functions/update_order_status/actions/execute?auth_type=apikey&zapikey=1003.af251af66bb233ed0dfcb7f4f968f88b.9c80e82b2c8a22d0ff53f1734c370d83";
+    // SECURITY: do not leave an API key in a public GitHub Pages site.
+    // Use only for a short, controlled test. Production should call a secured backend/proxy.
+    const FUNCTION_ENDPOINT = "https://www.zohoapis.com/crm/v7/functions/update_order_status/actions/execute";
+    const API_KEY = "PASTE_NEW_API_KEY_FOR_TEMPORARY_TEST_ONLY";
 
-    /* ---------- Logger ---------- */
-    const logBox = document.getElementById("logBox");
-    const logLines = [];
-
-    function maskKey(text) {
-      return String(text).replace(/(zapikey=)[^&\s"']+/g, "$1***MASKED***");
-    }
-
-    function log(label, data) {
-      const time = new Date().toISOString().split("T")[1].replace("Z", "");
-      let line = "[" + time + "] " + label;
-      if (data !== undefined) {
-        let text;
-        try {
-          text = typeof data === "string" ? data : JSON.stringify(data, null, 2);
-        } catch (e) {
-          text = String(data);
-        }
-        line += "\n    " + maskKey(text).replace(/\n/g, "\n    ");
-      }
-      logLines.push(line);
-      logBox.textContent = logLines.join("\n");
-      logBox.scrollTop = logBox.scrollHeight;
-      console.log(maskKey(line));
-    }
-
-    document.getElementById("copyLogs").addEventListener("click", function () {
-      const text = logLines.join("\n");
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { log("Logs copied to clipboard"); });
-      } else {
-        const range = document.createRange();
-        range.selectNodeContents(logBox);
-        const sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-        document.execCommand("copy");
-        log("Logs copied (fallback)");
-      }
-    });
-
-    window.addEventListener("error", function (e) {
-      log("WINDOW ERROR: " + e.message + " (line " + e.lineno + ")");
-    });
-    window.addEventListener("unhandledrejection", function (e) {
-      log("UNHANDLED PROMISE REJECTION: " + (e.reason && e.reason.message ? e.reason.message : e.reason));
-    });
-
-    /* ---------- Page logic ---------- */
-    log("Page loaded");
-    log("Full page URL", window.location.href);
-    log("Query string", window.location.search);
-
-    const params   = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
+    // trim() also protects against a leading space in the button URL.
     const recordId = (params.get("con_id") || "").trim();
+    const logArea = document.getElementById("debugLog");
 
-    log("con_id (raw, JSON-quoted to reveal spaces)", JSON.stringify(recordId));
-    log("con_id length", recordId ? recordId.length : 0);
+    function log(message, data) {
+      const line = "[" + new Date().toISOString() + "] " + message +
+        (data === undefined ? "" : "\n" + (typeof data === "string" ? data : JSON.stringify(data, null, 2)));
+      logArea.value += line + "\n\n";
+      console.log(line);
+      logArea.scrollTop = logArea.scrollHeight;
+    }
 
     function show(id) {
-      log("Showing screen: " + id);
-      ["loading", "success", "error"].forEach(function (s) {
-        document.getElementById(s).classList.toggle("hidden", s !== id);
+      ["loading", "success", "error"].forEach(function (section) {
+        document.getElementById(section).classList.toggle("hidden", section !== id);
       });
     }
 
     function showError(message) {
-      log("ERROR shown to user: " + message);
       if (message) document.getElementById("errorText").textContent = message;
       show("error");
     }
 
+    document.getElementById("copyLogBtn").addEventListener("click", async function () {
+      try {
+        await navigator.clipboard.writeText(logArea.value);
+        document.getElementById("copyStatus").textContent = "Copied.";
+      } catch (err) {
+        log("Clipboard API unavailable; select the log text manually to copy it.", String(err));
+        logArea.focus();
+        logArea.select();
+        document.getElementById("copyStatus").textContent = "Select the text and press Ctrl+C.";
+      }
+    });
+
+    log("Page loaded.", { pageUrl: window.location.origin + window.location.pathname, queryHasConId: Boolean(recordId), con_id: recordId || "MISSING" });
+
     if (!recordId) {
-      showError("This link is invalid because the record ID is missing.");
+      log("STOP: con_id is missing or empty.");
+      showError("This link is invalid because the Contact record ID is missing. Please contact us.");
+    } else if (!API_KEY || API_KEY === "PASTE_NEW_API_KEY_FOR_TEMPORARY_TEST_ONLY") {
+      log("STOP: API_KEY is still the placeholder. No request was sent.");
+      showError("The page's troubleshooting setup is incomplete. Please contact support.");
     } else {
-      const url = BASE + "&con_id=" + encodeURIComponent(recordId);
-      log("Request URL (key masked)", url);
+      const requestUrl = new URL(FUNCTION_ENDPOINT);
+      requestUrl.searchParams.set("auth_type", "apikey");
+      requestUrl.searchParams.set("zapikey", API_KEY);
+      // Map the Deluge function's declared argument by its exact name.
+      requestUrl.searchParams.set("con_id", recordId);
 
-      // Attempt 1: normal request, so a real server error can be detected
-      log("Attempt 1: fetch GET (normal mode) started");
+      // Never write the real key into page/console logs.
+      const safeLogUrl = FUNCTION_ENDPOINT + "?auth_type=apikey&zapikey=[REDACTED]&con_id=" +
+        encodeURIComponent(recordId);
+      log("About to call the Zoho function. API key is masked below.", { method: "GET", url: safeLogUrl, functionName: "update_order_status", argumentName: "con_id", argumentValue: recordId });
 
-      fetch(url, { method: "GET" })
-        .then(function (res) {
-          log("Attempt 1: response received", {
-            status: res.status,
-            statusText: res.statusText,
-            ok: res.ok,
-            type: res.type,
-            contentType: res.headers.get("content-type")
-          });
+      fetch(requestUrl.toString(), { method: "GET", mode: "cors", cache: "no-store" })
+        .then(async function (response) {
+          log("HTTP response received.", { ok: response.ok, status: response.status, statusText: response.statusText });
+          const responseText = await response.text();
+          log("Raw response body:", responseText || "[empty response body]");
 
-          return res.text().then(function (body) {
-            log("Attempt 1: response body", body);
+          let payload = null;
+          try { payload = responseText ? JSON.parse(responseText) : null; }
+          catch (parseError) { log("Response was not valid JSON.", String(parseError)); }
 
-            try {
-              const json = JSON.parse(body);
-              log("Attempt 1: parsed JSON", json);
-              if (json && json.code) log("Zoho code field: " + json.code);
-              if (json && json.details) log("Zoho details field", json.details);
-            } catch (e) {
-              log("Attempt 1: body is not JSON");
-            }
+          if (!response.ok) {
+            log("FUNCTION CALL FAILED: HTTP status was not successful.");
+            showError("Zoho returned HTTP " + response.status + ". Copy the diagnostic log and check the Zoho Function Logs.");
+            return;
+          }
 
-            if (res.ok) {
-              show("success");
-            } else {
-              showError("The server returned an error (status " + res.status + "). Please contact us.");
-            }
-          });
+          const output = payload && payload.details && payload.details.output != null
+            ? String(payload.details.output)
+            : (typeof payload === "string" ? payload : (payload && payload.output != null ? String(payload.output) : ""));
+          const apiSaysSuccess = payload && String(payload.code || "").toLowerCase() === "success";
+          log("Parsed function result.", { apiCode: payload ? payload.code : "not available", functionOutput: output || "[empty output]" });
+
+          if (apiSaysSuccess && output.toLowerCase().indexOf("success:") === 0) {
+            log("CONFIRMED: function returned its explicit SUCCESS result. The Deluge function also re-read the Contact field.");
+            show("success");
+          } else {
+            log("UNVERIFIED: HTTP request may have reached Zoho, but the function did not return the expected explicit SUCCESS result.");
+            showError("Zoho responded, but the Contact field update was not explicitly confirmed. Copy the diagnostic log and check the Zoho Function Logs.");
+          }
         })
-        .catch(function (err) {
-          log("Attempt 1 FAILED (likely CORS / network): " + err.name + " - " + err.message);
-
-          // Attempt 2: the browser blocked reading the response (CORS),
-          // so send the request without reading the result
-          log("Attempt 2: fetch GET (no-cors mode) started");
-
-          fetch(url, { method: "GET", mode: "no-cors" })
-            .then(function (res) {
-              log("Attempt 2: request sent. Response is opaque, so status/body cannot be read", {
-                type: res.type,
-                status: res.status
-              });
-              log("NOTE: success screen is shown here without confirming the function actually ran");
-              show("success");
-            })
-            .catch(function (err2) {
-              log("Attempt 2 FAILED: " + err2.name + " - " + err2.message);
-              showError("We could not reach the server. Please check your connection and try again.");
-            });
+        .catch(function (error) {
+          // Do not retry with no-cors: the first request may already have executed.
+          log("FETCH ERROR: browser could not read the Zoho response.", {
+            error: String(error),
+            likelyCauses: ["CORS restriction", "network failure", "blocked request"],
+            nextStep: "Check Zoho CRM > Setup > Developer Hub > Functions > Update_order_status > Logs to verify whether the function executed."
+          });
+          showError("Your browser could not read the Zoho response. This may be a CORS restriction, so we cannot tell from this page alone whether the update completed. Please contact us if needed.");
         });
     }
   </script>

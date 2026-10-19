@@ -83,6 +83,45 @@
     .footer { margin-top: 28px; font-size: 13px; color: #90a4ae; }
 
     .hidden { display: none; }
+
+    /* ---- Debug log panel ---- */
+    .debug {
+      margin-top: 32px;
+      text-align: left;
+      border-top: 1px dashed #cfd8dc;
+      padding-top: 16px;
+    }
+    .debug-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #546e7a;
+    }
+    .debug-head button {
+      font-size: 12px;
+      padding: 4px 10px;
+      border: 1px solid #b0bec5;
+      background: #fff;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #logBox {
+      width: 100%;
+      height: 220px;
+      overflow: auto;
+      background: #263238;
+      color: #c8e6c9;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      padding: 10px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -119,21 +158,88 @@
       <div class="footer">Your Team</div>
     </div>
 
+    <!-- DEBUG LOGS (remove this block when done testing) -->
+    <div class="debug">
+      <div class="debug-head">
+        <span>Debug logs</span>
+        <button type="button" id="copyLogs">Copy logs</button>
+      </div>
+      <div id="logBox"></div>
+    </div>
+
   </div>
 
   <script>
     const BASE = "https://www.zohoapis.com/crm/v7/functions/update_order_status/actions/execute?auth_type=apikey&zapikey=1003.af251af66bb233ed0dfcb7f4f968f88b.9c80e82b2c8a22d0ff53f1734c370d83";
 
+    /* ---------- Logger ---------- */
+    const logBox = document.getElementById("logBox");
+    const logLines = [];
+
+    function maskKey(text) {
+      return String(text).replace(/(zapikey=)[^&\s"']+/g, "$1***MASKED***");
+    }
+
+    function log(label, data) {
+      const time = new Date().toISOString().split("T")[1].replace("Z", "");
+      let line = "[" + time + "] " + label;
+      if (data !== undefined) {
+        let text;
+        try {
+          text = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+        } catch (e) {
+          text = String(data);
+        }
+        line += "\n    " + maskKey(text).replace(/\n/g, "\n    ");
+      }
+      logLines.push(line);
+      logBox.textContent = logLines.join("\n");
+      logBox.scrollTop = logBox.scrollHeight;
+      console.log(maskKey(line));
+    }
+
+    document.getElementById("copyLogs").addEventListener("click", function () {
+      const text = logLines.join("\n");
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () { log("Logs copied to clipboard"); });
+      } else {
+        const range = document.createRange();
+        range.selectNodeContents(logBox);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand("copy");
+        log("Logs copied (fallback)");
+      }
+    });
+
+    window.addEventListener("error", function (e) {
+      log("WINDOW ERROR: " + e.message + " (line " + e.lineno + ")");
+    });
+    window.addEventListener("unhandledrejection", function (e) {
+      log("UNHANDLED PROMISE REJECTION: " + (e.reason && e.reason.message ? e.reason.message : e.reason));
+    });
+
+    /* ---------- Page logic ---------- */
+    log("Page loaded");
+    log("Full page URL", window.location.href);
+    log("Query string", window.location.search);
+
     const params   = new URLSearchParams(window.location.search);
     const recordId = params.get("con_id");
 
+    log("con_id (raw, JSON-quoted to reveal spaces)", JSON.stringify(recordId));
+    log("con_id length", recordId ? recordId.length : 0);
+
     function show(id) {
+      log("Showing screen: " + id);
       ["loading", "success", "error"].forEach(function (s) {
         document.getElementById(s).classList.toggle("hidden", s !== id);
       });
     }
 
     function showError(message) {
+      log("ERROR shown to user: " + message);
       if (message) document.getElementById("errorText").textContent = message;
       show("error");
     }
@@ -142,22 +248,58 @@
       showError("This link is invalid because the record ID is missing.");
     } else {
       const url = BASE + "&con_id=" + encodeURIComponent(recordId);
+      log("Request URL (key masked)", url);
 
       // Attempt 1: normal request, so a real server error can be detected
+      log("Attempt 1: fetch GET (normal mode) started");
+
       fetch(url, { method: "GET" })
         .then(function (res) {
-          if (res.ok) {
-            show("success");
-          } else {
-            showError("The server returned an error (status " + res.status + "). Please contact us.");
-          }
+          log("Attempt 1: response received", {
+            status: res.status,
+            statusText: res.statusText,
+            ok: res.ok,
+            type: res.type,
+            contentType: res.headers.get("content-type")
+          });
+
+          return res.text().then(function (body) {
+            log("Attempt 1: response body", body);
+
+            try {
+              const json = JSON.parse(body);
+              log("Attempt 1: parsed JSON", json);
+              if (json && json.code) log("Zoho code field: " + json.code);
+              if (json && json.details) log("Zoho details field", json.details);
+            } catch (e) {
+              log("Attempt 1: body is not JSON");
+            }
+
+            if (res.ok) {
+              show("success");
+            } else {
+              showError("The server returned an error (status " + res.status + "). Please contact us.");
+            }
+          });
         })
-        .catch(function () {
+        .catch(function (err) {
+          log("Attempt 1 FAILED (likely CORS / network): " + err.name + " - " + err.message);
+
           // Attempt 2: the browser blocked reading the response (CORS),
           // so send the request without reading the result
+          log("Attempt 2: fetch GET (no-cors mode) started");
+
           fetch(url, { method: "GET", mode: "no-cors" })
-            .then(function () { show("success"); })
-            .catch(function () {
+            .then(function (res) {
+              log("Attempt 2: request sent. Response is opaque, so status/body cannot be read", {
+                type: res.type,
+                status: res.status
+              });
+              log("NOTE: success screen is shown here without confirming the function actually ran");
+              show("success");
+            })
+            .catch(function (err2) {
+              log("Attempt 2 FAILED: " + err2.name + " - " + err2.message);
               showError("We could not reach the server. Please check your connection and try again.");
             });
         });

@@ -226,7 +226,7 @@
     log("Query string", window.location.search);
 
     const params   = new URLSearchParams(window.location.search);
-    const recordId = params.get("con_id");
+    const recordId = (params.get("con_id") || "").trim();
 
     log("con_id (raw, JSON-quoted to reveal spaces)", JSON.stringify(recordId));
     log("con_id length", recordId ? recordId.length : 0);
